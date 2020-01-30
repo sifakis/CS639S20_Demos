@@ -1,6 +1,6 @@
 #include "Laplacian.h"
 
-void ComputeLaplacian(float **u, float **Lu)
+void ComputeLaplacian(const float (&u)[XDIM][YDIM], float (&Lu)[XDIM][YDIM])
 {
 
 #pragma omp parallel for

@@ -1,6 +1,6 @@
 #pragma once
 
 #define XDIM 16384
-#define YDIM 512
+#define YDIM 256
 
-void ComputeLaplacian(float **u, float **Lu);
+void ComputeLaplacian(const float (&u)[XDIM][YDIM], float (&Lu)[XDIM][YDIM]);
