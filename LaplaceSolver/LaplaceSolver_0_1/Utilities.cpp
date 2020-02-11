@@ -4,6 +4,7 @@
 #include <sstream>
 #include <iostream>
 #include <iomanip>
+#include <stdexcept>
 
 void Clear(float (&x)[XDIM][YDIM][ZDIM])
 {
