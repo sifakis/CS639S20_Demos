@@ -30,15 +30,18 @@ void MatMatTransposeMultiply(const float (&A)[MATRIX_SIZE][MATRIX_SIZE],
     auto blockB = reinterpret_cast<const_blocked_matrix_t>(B[0][0]);
     auto blockC = reinterpret_cast<blocked_matrix_t>(C[0][0]);
 
+#pragma omp parallel for
     for (int i = 0; i < MATRIX_SIZE; i++)
     for (int j = 0; j < MATRIX_SIZE; j++)
         C[i][j] = 0.;    
 
+#pragma omp parallel for
     for (int bi = 0; bi < NBLOCKS; bi++)
     for (int bj = 0; bj < NBLOCKS; bj++)
         for (int bk = 0; bk < NBLOCKS; bk++)  
             for (int i = 0; i < BLOCK_SIZE; i++)
             for (int j = 0; j < BLOCK_SIZE; j++)
+#pragma omp simd aligned(blockA: 64, blockB: 64, blockC: 64)
                 for (int k = 0; k < BLOCK_SIZE; k++)
                     blockC[bi][i][bj][j] += blockA[bi][i][bk][k]*blockB[bj][j][bk][k];
 }
