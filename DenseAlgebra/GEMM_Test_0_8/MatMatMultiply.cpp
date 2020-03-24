@@ -50,24 +50,18 @@ void MatMatTransposeMultiply(const float (&A)[MATRIX_SIZE][MATRIX_SIZE],
             for (int j = 0; j < BLOCK_SIZE; j++) {
                 localA[i][j] = blockA[bi][i][bk][j];
                 localB[i][j] = blockB[bj][i][bk][j];
-                    
-            }
-
-            for (int i = 0; i < BLOCK_SIZE; i++)
-            for (int j = 0; j < BLOCK_SIZE; j++) {
                 localC[i][j] = 0.;
-#pragma omp simd
-                for (int k = 0; k < BLOCK_SIZE; k++)
-                    localC[i][j] += localA[i][k] * localB[j][k];
-                //blockC[bi][i][bj][j] += blockA[bi][i][bk][k]*blockB[bj][j][bk][k];
-                    // blockC[bi][i][bj][j] += blockA[bi][i][bk][k]*blockB[bj][j][bk][k];
             }
 
             for (int i = 0; i < BLOCK_SIZE; i++)
             for (int j = 0; j < BLOCK_SIZE; j++)
-                
-                blockC[bi][i][bj][j] += localC[i][j];
-            
+#pragma omp simd aligned(localA: 64, localB: 64, localC: 64)
+                for (int k = 0; k < BLOCK_SIZE; k++)
+                    localC[i][j] += localA[i][k] * localB[j][k];
+
+            for (int i = 0; i < BLOCK_SIZE; i++)
+            for (int j = 0; j < BLOCK_SIZE; j++)                
+                blockC[bi][i][bj][j] += localC[i][j];            
         }
 }
 
