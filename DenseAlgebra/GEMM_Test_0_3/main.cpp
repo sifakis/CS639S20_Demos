@@ -36,9 +36,9 @@ int main(int argc, char *argv[])
     float discrepancy = MatrixMaxDifference(C, referenceC);
     std::cout << "Discrepancy between two methods : " << discrepancy << std::endl;
     
-    for(int test = 1; test <= 10; test++)
+    for(int test = 1; test <= 20; test++)
     {
-        std::cout << "Running kernel for performance test ... " << std::setw(2) << test << " ";
+        std::cout << "Running kernel for performance run #" << std::setw(2) << test << " ... ";
         timer.Start();
         MatMatMultiply(A, B, C);
         timer.Stop("Elapsed time : ");

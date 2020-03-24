@@ -17,7 +17,6 @@ void MatTranspose(const float (&A)[MATRIX_SIZE][MATRIX_SIZE],
     );
 }
 
-// Matrix A is presumed to be row-major, matrix B presumed to be column-major
 void MatMatTransposeMultiply(const float (&A)[MATRIX_SIZE][MATRIX_SIZE],
     const float (&B)[MATRIX_SIZE][MATRIX_SIZE], float (&C)[MATRIX_SIZE][MATRIX_SIZE])
 {
@@ -37,10 +36,10 @@ void MatMatTransposeMultiply(const float (&A)[MATRIX_SIZE][MATRIX_SIZE],
     for (int bi = 0; bi < NBLOCKS; bi++)
     for (int bj = 0; bj < NBLOCKS; bj++)
         for (int bk = 0; bk < NBLOCKS; bk++)  
-            for (int i = 0; i < BLOCK_SIZE; i++)
-            for (int j = 0; j < BLOCK_SIZE; j++)
-                for (int k = 0; k < BLOCK_SIZE; k++)
-                    blockC[bi][i][bj][j] += blockA[bi][i][bk][k]*blockB[bj][j][bk][k];
+            for (int ii = 0; ii < BLOCK_SIZE; ii++)
+            for (int jj = 0; jj < BLOCK_SIZE; jj++)
+                for (int kk = 0; kk < BLOCK_SIZE; kk++)
+                    blockC[bi][ii][bj][jj] += blockA[bi][ii][bk][kk] * blockB[bj][jj][bk][kk];
 }
 
 void MatMatMultiplyReference(const float (&A)[MATRIX_SIZE][MATRIX_SIZE],

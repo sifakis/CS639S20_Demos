@@ -23,7 +23,6 @@ alignas(64) float localC[BLOCK_SIZE][BLOCK_SIZE];
 
 #pragma omp threadprivate(localA, localB, localC)
 
-// Matrix A is presumed to be row-major, matrix B presumed to be column-major
 void MatMatTransposeMultiply(const float (&A)[MATRIX_SIZE][MATRIX_SIZE],
     const float (&B)[MATRIX_SIZE][MATRIX_SIZE], float (&C)[MATRIX_SIZE][MATRIX_SIZE])
 {
@@ -46,22 +45,22 @@ void MatMatTransposeMultiply(const float (&A)[MATRIX_SIZE][MATRIX_SIZE],
     for (int bj = 0; bj < NBLOCKS; bj++)
         for (int bk = 0; bk < NBLOCKS; bk++) { 
 
-            for (int i = 0; i < BLOCK_SIZE; i++)
-            for (int j = 0; j < BLOCK_SIZE; j++) {
-                localA[i][j] = blockA[bi][i][bk][j];
-                localB[i][j] = blockB[bj][i][bk][j];
-                localC[i][j] = 0.;
+            for (int ii = 0; ii < BLOCK_SIZE; ii++)
+            for (int jj = 0; jj < BLOCK_SIZE; jj++) {
+                localA[ii][jj] = blockA[bi][ii][bk][jj];
+                localB[ii][jj] = blockB[bj][ii][bk][jj];
+                localC[ii][jj] = 0.;
             }
 
-            for (int i = 0; i < BLOCK_SIZE; i++)
-            for (int j = 0; j < BLOCK_SIZE; j++)
+            for (int ii = 0; ii < BLOCK_SIZE; ii++)
+            for (int jj = 0; jj < BLOCK_SIZE; jj++)
 #pragma omp simd aligned(localA: 64, localB: 64, localC: 64)
-                for (int k = 0; k < BLOCK_SIZE; k++)
-                    localC[i][j] += localA[i][k] * localB[j][k];
+                for (int kk = 0; kk < BLOCK_SIZE; kk++)
+                    localC[ii][jj] += localA[ii][kk] * localB[jj][kk];
 
-            for (int i = 0; i < BLOCK_SIZE; i++)
-            for (int j = 0; j < BLOCK_SIZE; j++)                
-                blockC[bi][i][bj][j] += localC[i][j];            
+            for (int ii = 0; ii < BLOCK_SIZE; ii++)
+            for (int jj = 0; jj < BLOCK_SIZE; jj++)                
+                blockC[bi][ii][bj][jj] += localC[ii][jj];            
         }
 }
 

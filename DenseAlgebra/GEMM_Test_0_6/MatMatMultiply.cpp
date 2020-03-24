@@ -39,11 +39,14 @@ void MatMatTransposeMultiply(const float (&A)[MATRIX_SIZE][MATRIX_SIZE],
     for (int bi = 0; bi < NBLOCKS; bi++)
     for (int bj = 0; bj < NBLOCKS; bj++)
         for (int bk = 0; bk < NBLOCKS; bk++)  
-            for (int i = 0; i < BLOCK_SIZE; i++)
-            for (int j = 0; j < BLOCK_SIZE; j++)
-#pragma omp simd aligned(blockA: 64, blockB: 64, blockC: 64)
-                for (int k = 0; k < BLOCK_SIZE; k++)
-                    blockC[bi][i][bj][j] += blockA[bi][i][bk][k]*blockB[bj][j][bk][k];
+            for (int ii = 0; ii < BLOCK_SIZE; ii++)
+            for (int jj = 0; jj < BLOCK_SIZE; jj++) {
+                float partial_result = 0.; // Needed by some compilers for correctness
+#pragma omp simd reduction (+:partial_result)
+                for (int kk = 0; kk < BLOCK_SIZE; kk++)
+                    partial_result += blockA[bi][ii][bk][kk] * blockB[bj][jj][bk][kk];
+                blockC[bi][ii][bj][jj] += partial_result;
+            }
 }
 
 void MatMatMultiplyReference(const float (&A)[MATRIX_SIZE][MATRIX_SIZE],
