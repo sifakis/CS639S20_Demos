@@ -37,8 +37,9 @@ void MatMatMultiply(const float (&A)[MATRIX_SIZE][MATRIX_SIZE],
             }
 
             for (int ii = 0; ii < BLOCK_SIZE; ii++)
-            for (int jj = 0; jj < BLOCK_SIZE; jj++)
                 for (int kk = 0; kk < BLOCK_SIZE; kk++)
+#pragma omp simd
+                    for (int jj = 0; jj < BLOCK_SIZE; jj++)
                     localC[ii][jj] += localA[ii][kk] * localB[kk][jj];
         }
 
