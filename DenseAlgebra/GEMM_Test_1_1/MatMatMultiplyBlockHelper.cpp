@@ -3,12 +3,12 @@
 void MatMatMultiplyBlockHelper(const float (&bA)[BLOCK_SIZE][BLOCK_SIZE],
     const float (&bB)[BLOCK_SIZE][BLOCK_SIZE], float (&bC)[BLOCK_SIZE][BLOCK_SIZE])
 {
-    static constexpr int nE = 16; // Entries in a SIMD vector
+    static constexpr int nW = 16; // Entries in a SIMD vector
                                   // (for AVX512; use 8 for AVX2)    
-    static constexpr int nB = BLOCK_SIZE / nE; // Number of blocks
+    static constexpr int nB = BLOCK_SIZE / nW; // Number of blocks
     
-    using const_blocked_matrix_t = const float (&) [nB][nE][nB][nE];
-    using blocked_matrix_t = float (&) [nB][nE][nB][nE];
+    using const_blocked_matrix_t = const float (&) [nB][nW][nB][nW];
+    using blocked_matrix_t = float (&) [nB][nW][nB][nW];
 
     // Matrix bA has indices [i][k], or in block form (bbA) [bi][ii][bk][kk]
     // Matrix bB has indices [k][j], or in block form (bbB) [bk][kk][bj][jj]
@@ -23,10 +23,10 @@ void MatMatMultiplyBlockHelper(const float (&bA)[BLOCK_SIZE][BLOCK_SIZE],
     for (int bk = 0; bk < nB; bk++)
 
     {
-        for (int kk = 0; kk < nE; kk++)
-        for (int ii = 0; ii < nE; ii++) 
+        for (int kk = 0; kk < nW; kk++)
+        for (int ii = 0; ii < nW; ii++) 
 #pragma omp simd
-        for (int jj = 0; jj < nE; jj++)
+        for (int jj = 0; jj < nW; jj++)
                 bbC[bi][ii][bj][jj] += bbA[bi][ii][bk][kk] * bbB[bk][kk][bj][jj];
     }
 }
