@@ -3,8 +3,6 @@
 #include "Timer.h"
 #include "Utilities.h"
 
-Timer timerLaplacian;
-
 int main(int argc, char *argv[])
 {
     using array_t = float (&) [XDIM][YDIM][ZDIM];
@@ -32,10 +30,8 @@ int main(int argc, char *argv[])
         timer.Stop("Initialization : ");
     }
 
-    // Call Conjugate Gradients algorithm
-    timerLaplacian.Reset();
+    // Call PARDISO solver
     DirectSparseSolver(matrix, x, f);
-    timerLaplacian.Print("Total Laplacian Time : ");
 
     return 0;
 }
